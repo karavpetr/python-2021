@@ -11,5 +11,5 @@ python3 cryptography.py --action=Encrypt --in_path=input.txt --out_path=output.t
 python3 cryptography.py --action=Decrypt --in_path=output.txt --out_path=output2.txt --cipher_name=Caesar --key_path=key.txt
 
 Возможные значения параметров:
-action: Encrypt, Decrypt
-cipher_name: Caesar
+action: Encrypt, Decrypt, AutoDecrypt
+cipher_name: Caesar, Vigenere, Vernam

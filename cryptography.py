@@ -205,7 +205,7 @@ class Text:
             caesar = Caesar()
             caesar.AutoDecrypt(self.in_path, self.out_path, self.key_path)
         else:
-            print("Sorry, no such encryptor.")
+            print("Sorry, no such decryptor.")
             pass
 
 
@@ -230,6 +230,3 @@ else:
     print("Action can not be recognised.")
 
 print("Finish")
-
-#python3 cryptography.py --action=Encrypt --in_path=test/test.txt --out_path=test/output.txt --cipher_name=Vernam --key_path=test/key.txt
-#python3 cryptography.py --action=Decrypt --in_path=test/output.txt --out_path=test/output2.txt --cipher_name=Vernam --key_path=test/key.txt

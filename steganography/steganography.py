@@ -29,7 +29,7 @@ class Steganography:
         image.save(output_image_path, "PNG")
         text.close()
 
-    def Decrypt(self, input_image_path, output_text_path):
+    def Decrypt(self, input_image_path, output_text_path, information_size = 1000):
         numbers = []
         image = Image.open(input_image_path)				
         pixels = image.load()
@@ -42,7 +42,7 @@ class Steganography:
                     yield (i, j)
         indexes = index()
         
-        for i in range(1000):
+        for i in range(information_size):
             numbers.append(pixels[tuple(next(indexes))][0])
 
         output_text = open(output_text_path, 'a')
@@ -51,6 +51,6 @@ class Steganography:
         output_text.close()
 
 steganography_en = Steganography()											
-steganography_en.Encrypt("steganography/input.txt", "steganography/image.png", "steganography/image2.png")
+steganography_en.Encrypt("steganography/input.txt", "steganography/image.png", "steganography/decrypted_image.png")
 steganography_de = Steganography()											
-steganography_de.Decrypt("steganography/image2.png", "steganography/output.txt")
+steganography_de.Decrypt("steganography/decrypted_image.png", "steganography/output.txt")

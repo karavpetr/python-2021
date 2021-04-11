@@ -1,4 +1,7 @@
 import argparse
+import numpy as np
+from numpy import linalg as LA
+import random
 
 
 class Cipher:
@@ -165,6 +168,53 @@ class Vernam(Cipher):
     def Decrypt(self, in_path, out_path, key_path):
         self.Encrypt(in_path, out_path, key_path)
 
+class Hill(Cipher):
+    def EncryptChar(self, first_char, second_char, key):
+        vector = np.dot(key, np.array([ord(first_char), ord(second_char)]))
+        return chr(int(vector[0, 0]) % 256) + chr(int(vector[0, 1]) % 256)
+
+    def EncryptLine(self, string, key):
+        string += '\n'
+        ret_str = ''
+        for i in range(int(len(string) / 2)):
+            ret_str += self.EncryptChar(string[2*i], string[2*i + 1], key)
+        return ret_str
+
+    def Encrypt(self, in_path, out_path, key_path):
+        def key():
+            key_file = open(key_path, 'r')
+            matrix_size = key_file.readline()
+            matrix_size = int(matrix_size)
+            if matrix_size != 2:
+                print("Sorry, only 2*2 matrix.")
+                raise MatrixError
+            matrix = []
+            for i in range(matrix_size):
+                line = key_file.readline().split()
+                line = [int(x) for x in line]
+                matrix.append(line)
+            matrix = np.matrix(matrix)
+            return matrix
+        
+        self.EncryptFile(in_path, out_path, key())
+
+    def Decrypt(self, in_path, out_path, key_path):
+        def key():
+            key_file = open(key_path, 'r')
+            matrix_size = key_file.readline()
+            matrix_size = int(matrix_size)
+            if matrix_size != 2:
+                print("Sorry, only 2*2 matrix.")
+                raise MatrixError
+            matrix = []
+            for i in range(matrix_size):
+                line = key_file.readline().split()
+                line = [int(x) for x in line]
+                matrix.append(line)
+            matrix = np.matrix(matrix)
+            return LA.inv(matrix)
+        self.EncryptFile(in_path, out_path, key())
+
 class Text:
     def __init__(self, in_path = "input.txt",
                  out_path = "output.txt", key_path = "key.txt"):
@@ -182,6 +232,9 @@ class Text:
         elif cipher_name == "Vernam":
             vernam = Vernam()
             vernam.Encrypt(self.in_path, self.out_path, self.key_path)
+        elif cipher_name == "Hill":
+            hill = Hill()
+            hill.Encrypt(self.in_path, self.out_path, self.key_path)
         else:
             print("Sorry, no such encryptor.")
             pass
@@ -196,6 +249,9 @@ class Text:
         elif cipher_name == "Vernam":
             vernam = Vernam()
             vernam.Decrypt(self.in_path, self.out_path, self.key_path)
+        elif cipher_name == "Hill":
+            hill = Hill()
+            hill.Decrypt(self.in_path, self.out_path, self.key_path)
         else:
             print("Sorry, no such decryptor.")
             pass
